@@ -3,51 +3,17 @@ import { Wallet, Landmark, FileText, Lock, ChevronRight, Settings, LogOut, Messa
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
+import { useUser } from '../context/UserContext';
+
 const Me = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      try {
-        const response = await fetch('https://heri-backend.onrender.com/api/auth/me', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          setUser(data.data);
-          localStorage.setItem('user', JSON.stringify(data.data));
-        } else {
-          // Token might be invalid or expired
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          navigate('/login');
-        }
-      } catch (err) {
-        console.error('Error fetching user:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, [navigate]);
+  const { user, loading } = useUser();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
+    window.location.reload(); // Force clear context
   };
 
   if (loading) {

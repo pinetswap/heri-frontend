@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Globe, Eye, EyeOff, ChevronLeft } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 
+import { API_URL } from '../config/api';
+
 const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +27,7 @@ const Signup = () => {
     setError('');
 
     try {
-      const response = await fetch('https://heri-backend.onrender.com/api/auth/register', {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

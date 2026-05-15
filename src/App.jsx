@@ -14,6 +14,8 @@ import SelectCurrency from './pages/SelectCurrency';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
+import { UserProvider } from './context/UserContext';
+
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -29,28 +31,30 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      
-      {/* Protect all routes within the Layout */}
-      <Route path="/" element={
-        <ProtectedRoute>
-          <Layout />
-        </ProtectedRoute>
-      }>
-        <Route index element={<Home />} />
-        <Route path="team" element={<Team />} />
-        <Route path="vip" element={<VIP />} />
-        <Route path="me" element={<Me />} />
-        <Route path="select-currency" element={<SelectCurrency />} />
-        <Route path="recharge" element={<Recharge />} />
-        <Route path="withdraw" element={<Withdraw />} />
-        <Route path="change-password" element={<ChangePassword />} />
-      </Route>
+    <UserProvider>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        
+        {/* Protect all routes within the Layout */}
+        <Route path="/" element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Home />} />
+          <Route path="team" element={<Team />} />
+          <Route path="vip" element={<VIP />} />
+          <Route path="me" element={<Me />} />
+          <Route path="select-currency" element={<SelectCurrency />} />
+          <Route path="recharge" element={<Recharge />} />
+          <Route path="withdraw" element={<Withdraw />} />
+          <Route path="change-password" element={<ChangePassword />} />
+        </Route>
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </UserProvider>
   );
 }
 
