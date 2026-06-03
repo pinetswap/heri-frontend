@@ -7,12 +7,15 @@ import {
   Bell, 
   Plus, 
   Minus,
-  Settings2
+  Settings2,
+  Wallet
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import TradingChart from '../components/TradingChart';
+import { useUser } from '../context/UserContext';
 
 const Home = () => {
+  const { user } = useUser();
   const [stake, setStake] = useState(10);
   const [activeTab, setActiveTab] = useState('Even/Odd');
   const [isAuto, setIsAuto] = useState(false);
@@ -37,10 +40,12 @@ const Home = () => {
         <div className="flex items-center gap-3">
           <Menu size={24} className="text-gray-400" />
           <div className="w-8 h-8 bg-[#ff3b30] rounded-lg flex items-center justify-center font-bold">T</div>
-          <div className="flex items-center bg-[#1a1e26] px-3 py-1.5 rounded-lg border border-gray-700 gap-2">
-            <div className="w-5 h-5 bg-[#2196f3] rounded-full flex items-center justify-center text-[10px] font-bold">R</div>
-            <span className="text-sm font-bold">$ 0.00</span>
-            <ChevronDown size={14} className="text-gray-500" />
+          <div className="flex flex-col items-start bg-[#1a1e26] px-3 py-1 rounded-lg border border-gray-800">
+            <span className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Balance</span>
+            <div className="flex items-center gap-1">
+              <span className="text-xs font-bold text-[#2196f3]">$</span>
+              <span className="text-sm font-bold tracking-tight">{user?.balance?.toFixed(2) || '0.00'}</span>
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-4">
