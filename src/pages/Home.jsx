@@ -36,6 +36,11 @@ const Home = () => {
   const handleTrade = async (type) => {
     if (isTrading) return;
 
+    if (stake < 10) {
+      alert('Minimum stake amount is $10.');
+      return;
+    }
+
     if (!user || user.balance < stake) {
       alert('Insufficient balance to place this trade. Please recharge.');
       return;
@@ -47,7 +52,6 @@ const Home = () => {
       // Simulate "Working..." for 2.5 seconds
       await new Promise(resolve => setTimeout(resolve, 2500));
 
-      // As per request, user should "lose" and deduct stake
       const response = await fetch(`${API_URL}/users/update-balance`, {
         method: 'PUT',
         headers: {
@@ -56,17 +60,23 @@ const Home = () => {
         },
         body: JSON.stringify({
           amount: stake,
-          type: 'deduct'
+          isTrade: true
         })
       });
+
+      const data = await response.json();
 
       if (response.ok) {
         // Refresh user data to show new balance
         await fetchUser();
-        alert(`Trade closed. Result: Loss. -$${stake} deducted from your balance.`);
+        
+        if (data.result === 'win') {
+          alert(`Congratulations! You WON the trade. +$${data.payout.toFixed(2)} added to your balance.`);
+        } else {
+          alert(`Trade closed. Result: Loss. -$${stake} deducted from your balance.`);
+        }
       } else {
-        const errorData = await response.json();
-        alert(errorData.error || 'Failed to process trade.');
+        alert(data.error || 'Failed to process trade.');
       }
     } catch (err) {
       console.error('Trade error:', err);
