@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, Globe, Eye, EyeOff, ChevronLeft } from 'lucide-react';
+import { Mail, Lock, User, Globe, Eye, EyeOff, ChevronLeft, UserPlus } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 
 import { API_URL } from '../config/api';
@@ -54,107 +54,111 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#121212] text-white">
+    <div className="flex flex-col min-h-screen bg-[#0e1117] text-white">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-full h-64 bg-gradient-to-b from-[#2196f3]/5 to-transparent pointer-events-none"></div>
+
       {/* Header Area */}
-      <div className="flex items-center px-4 py-5 z-10">
-        <button onClick={() => navigate(-1)} className="p-1 active:scale-90 transition-transform">
-          <ChevronLeft size={24} strokeWidth={3} />
+      <div className="flex items-center px-4 py-5 z-20">
+        <button onClick={() => navigate(-1)} className="p-2 bg-[#1a1e26] rounded-xl border border-gray-800 active:scale-90 transition-transform">
+          <ChevronLeft size={20} className="text-gray-400" />
         </button>
       </div>
 
-      {/* Brand Area */}
-      <div className="flex flex-col items-center pt-2 pb-8 gap-3 px-6">
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-2xl border border-white/10 overflow-hidden transform -rotate-3">
+      {/* Brand & Heading Area */}
+      <div className="flex flex-col items-center pt-2 pb-8 gap-4 px-6 relative z-10">
+        <div className="w-16 h-16 bg-[#1a1e26] rounded-2xl flex items-center justify-center shadow-2xl border border-gray-800 overflow-hidden transform -rotate-3 transition-transform hover:rotate-0">
           <img src={logo} alt="Logo" className="w-full h-full object-contain" />
         </div>
         <div className="flex flex-col items-center text-center">
-          <h1 className="text-xl font-black tracking-tighter uppercase">Global Transfer</h1>
+          <h1 className="text-3xl font-black tracking-tight uppercase text-white">DERIV</h1>
+          <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">Start your journey</p>
         </div>
       </div>
 
-      {/* Main Form Card */}
-      <div className="main-content-card !rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.3)]">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6 pt-2 pb-10">
-          <div className="flex flex-col gap-1">
-            <h2 className="text-3xl font-black text-gray-900 tracking-tighter">Register</h2>
-            <p className="text-gray-400 text-xs font-bold">Join Global Transfer Investment today</p>
+      {/* Main Form Area */}
+      <div className="px-6 pb-12 relative z-10 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <div className="flex flex-col gap-1 mb-2">
+            <h2 className="text-2xl font-bold text-white">Create Account</h2>
+            <p className="text-gray-500 text-sm">Join thousands of traders worldwide</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-500 p-3 rounded-xl text-xs font-bold border border-red-100">
+            <div className="bg-red-500/10 text-red-500 p-4 rounded-xl text-xs font-bold border border-red-500/20">
               {error}
             </div>
           )}
 
           <div className="flex flex-col gap-4">
             {/* Full Name Field */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest ml-1">Full Name</span>
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center gap-4 shadow-inner">
-                <User size={18} className="text-gray-400" />
+            <div className="flex flex-col gap-2">
+              <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider ml-1">Full Name</span>
+              <div className="bg-[#1a1e26] rounded-2xl p-4 border border-gray-800 flex items-center gap-4 focus-within:border-[#2196f3] transition-colors shadow-lg">
+                <User size={18} className="text-gray-500" />
                 <input 
                   type="text" 
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder="Enter your full name" 
-                  className="w-full bg-transparent outline-none text-sm font-black text-gray-800 placeholder:text-gray-300" 
+                  placeholder="John Doe" 
+                  className="w-full bg-transparent outline-none text-sm font-semibold text-white placeholder:text-gray-600" 
                   required
                 />
               </div>
             </div>
 
             {/* Email Field */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest ml-1">Email Address</span>
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center gap-4 shadow-inner">
-                <Mail size={18} className="text-gray-400" />
+            <div className="flex flex-col gap-2">
+              <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider ml-1">Email Address</span>
+              <div className="bg-[#1a1e26] rounded-2xl p-4 border border-gray-800 flex items-center gap-4 focus-within:border-[#2196f3] transition-colors shadow-lg">
+                <Mail size={18} className="text-gray-500" />
                 <input 
                   type="email" 
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="name@example.com" 
-                  className="w-full bg-transparent outline-none text-sm font-black text-gray-800 placeholder:text-gray-300" 
+                  placeholder="john@example.com" 
+                  className="w-full bg-transparent outline-none text-sm font-semibold text-white placeholder:text-gray-600" 
                   required
                 />
               </div>
             </div>
 
             {/* Country Field */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest ml-1">Country</span>
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center gap-4 shadow-inner">
-                <Globe size={18} className="text-gray-400" />
+            <div className="flex flex-col gap-2">
+              <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider ml-1">Country</span>
+              <div className="bg-[#1a1e26] rounded-2xl p-4 border border-gray-800 flex items-center gap-4 focus-within:border-[#2196f3] transition-colors shadow-lg">
+                <Globe size={18} className="text-gray-500" />
                 <input 
                   type="text" 
                   name="country"
                   value={formData.country}
                   onChange={handleChange}
-                  placeholder="Enter your country" 
-                  className="w-full bg-transparent outline-none text-sm font-black text-gray-800 placeholder:text-gray-300" 
+                  placeholder="Select your country" 
+                  className="w-full bg-transparent outline-none text-sm font-semibold text-white placeholder:text-gray-600" 
                   required
                 />
               </div>
             </div>
 
             {/* Password Field */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest ml-1">Create Password</span>
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center gap-4 shadow-inner">
-                <Lock size={18} className="text-gray-400" />
+            <div className="flex flex-col gap-2">
+              <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider ml-1">Password</span>
+              <div className="bg-[#1a1e26] rounded-2xl p-4 border border-gray-800 flex items-center gap-4 focus-within:border-[#2196f3] transition-colors shadow-lg">
+                <Lock size={18} className="text-gray-500" />
                 <input 
                   type={showPassword ? "text" : "password"} 
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Create a secure password" 
-                  className="w-full bg-transparent outline-none text-sm font-black text-gray-800 placeholder:text-gray-300" 
+                  placeholder="Create a strong password" 
+                  className="w-full bg-transparent outline-none text-sm font-semibold text-white placeholder:text-gray-600" 
                   required
                   minLength={6}
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-300">
-                  {showPassword ? <EyeOff size={18} strokeWidth={2.5} /> : <Eye size={18} strokeWidth={2.5} />}
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-500 hover:text-white transition-colors">
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
@@ -163,16 +167,28 @@ const Signup = () => {
           <button 
             type="submit"
             disabled={loading}
-            className="w-full bg-[#ffcc80] text-black font-black py-5 rounded-[1.5rem] text-lg shadow-xl shadow-[#ffcc80]/20 active:scale-95 transition-transform uppercase tracking-widest mt-2 disabled:opacity-50"
+            className="w-full bg-[#2196f3] text-white font-bold py-4.5 rounded-2xl text-lg shadow-xl shadow-[#2196f3]/20 active:scale-[0.98] transition-all disabled:opacity-50 mt-4 flex items-center justify-center gap-2"
           >
-            {loading ? 'Creating...' : 'Create Account'}
+            {loading ? 'Creating Account...' : (
+              <>
+                <UserPlus size={20} />
+                <span>Register Now</span>
+              </>
+            )}
           </button>
 
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-xs text-gray-400 font-bold text-center leading-relaxed">
+          <div className="flex flex-col items-center gap-4 mt-4">
+            <p className="text-sm text-gray-500 text-center leading-relaxed">
               Already have an account? 
-              <Link to="/login" className="text-gray-900 font-black ml-1 uppercase tracking-wider underline">Log In here</Link>
+              <Link to="/login" className="text-[#2196f3] font-bold ml-1 hover:underline">Log In here</Link>
             </p>
+          </div>
+          
+          <div className="mt-4 flex flex-col gap-3">
+             <div className="flex items-start gap-3 p-3 bg-blue-500/5 rounded-xl border border-blue-500/10">
+                <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
+                <p className="text-[10px] text-gray-400 leading-normal italic">By registering, you agree to our Terms of Service and Privacy Policy regarding professional trading activities.</p>
+             </div>
           </div>
         </form>
       </div>

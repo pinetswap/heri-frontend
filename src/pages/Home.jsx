@@ -1,121 +1,211 @@
 
 import { useState, useEffect } from 'react';
-import { Landmark, FileText, Calendar, Gift } from 'lucide-react';
+import { 
+  Menu, 
+  ChevronDown, 
+  Volume2, 
+  Bell, 
+  Plus, 
+  Minus,
+  Settings2
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-import banner1 from '../assets/banner1.jpeg';
-import banner2 from '../assets/banner2.jpeg';
-import banner3 from '../assets/banner3.jpeg';
+import TradingChart from '../components/TradingChart';
 
 const Home = () => {
-  const [currentBanner, setCurrentBanner] = useState(0);
-  const banners = [banner1, banner2, banner3];
+  const [stake, setStake] = useState(10);
+  const [activeTab, setActiveTab] = useState('Even/Odd');
+  const [isAuto, setIsAuto] = useState(false);
+  const [lastDigits, setLastDigits] = useState([8.8, 9.0, 8.2, 9.6, 9.2, 11.8, 11.8, 8.4, 10.8, 12.4]);
+  const [liveData, setLiveData] = useState({ price: 0, change: 0, changePercent: 0 });
 
+  // Simulate changing digits occasionally
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [banners.length]);
+    const interval = setInterval(() => {
+      setLastDigits(prev => prev.map(d => Math.max(0, Math.min(20, d + (Math.random() - 0.5) * 2))));
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const tabs = ['Matches/Differs', 'Even/Odd', 'Over/Under'];
+  const presets = [1, 5, 10, 25, 50, 100];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Banner & Announcement in dark area */}
-      <div className="px-4 pt-2 flex flex-col gap-4">
-        {/* Banner Carousel */}
-        <div className="w-full h-44 rounded-[2rem] overflow-hidden relative shadow-lg bg-gray-900">
-          {banners.map((img, idx) => (
-            <img 
-              key={idx}
-              src={img} 
-              alt={`Banner ${idx + 1}`} 
-              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ${
-                idx === currentBanner ? 'opacity-100' : 'opacity-0'
-              }`}
-            />
-          ))}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-            {banners.map((_, i) => (
-              <div 
-                key={i} 
-                className={`h-1 rounded-full transition-all ${
-                  i === currentBanner ? 'w-6 bg-white' : 'w-2 bg-white/40'
-                }`}
-              ></div>
-            ))}
+    <div className="flex flex-col min-h-screen bg-[#0e1117] text-white pb-20">
+      {/* Top Navigation */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800">
+        <div className="flex items-center gap-3">
+          <Menu size={24} className="text-gray-400" />
+          <div className="w-8 h-8 bg-[#ff3b30] rounded-lg flex items-center justify-center font-bold">T</div>
+          <div className="flex items-center bg-[#1a1e26] px-3 py-1.5 rounded-lg border border-gray-700 gap-2">
+            <div className="w-5 h-5 bg-[#2196f3] rounded-full flex items-center justify-center text-[10px] font-bold">R</div>
+            <span className="text-sm font-bold">$ 0.00</span>
+            <ChevronDown size={14} className="text-gray-500" />
           </div>
         </div>
-
-        {/* Announcement */}
-        <div className="bg-[#1e1e1e] rounded-2xl px-4 py-2.5 flex items-center gap-3 text-sm text-gray-300 overflow-hidden border border-gray-800">
-          <Landmark size={18} className="flex-shrink-0 text-primary" />
-          <div className="whitespace-nowrap animate-marquee">
-            Join Global transfer Investment today and start earning high commissions. Let's move towards a future of sustainable energy together.
-          </div>
+        <div className="flex items-center gap-4">
+          <Volume2 size={20} className="text-[#2196f3]" />
+          <Link to="/select-currency" className="bg-[#2196f3] text-white px-4 py-1.5 rounded-lg text-sm font-bold">Deposit</Link>
+          <Bell size={20} className="text-gray-400" />
         </div>
       </div>
 
-      {/* Main Content White Card */}
-      <div className="main-content-card mt-6">
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="col-span-1 row-span-2 bg-[#121212] rounded-[2rem] p-6 flex flex-col justify-between relative overflow-hidden h-44 shadow-lg border border-gray-800">
-             <span className="text-2xl font-bold text-white z-10">App</span>
-             <div className="absolute right-[-10%] bottom-[-10%] opacity-60">
-                <img src="https://cdn-icons-png.flaticon.com/512/2150/2150150.png" width="90" alt="" />
-             </div>
+      {/* Trade Type Tabs */}
+      <div className="flex items-center gap-4 px-4 py-2 border-b border-gray-800 overflow-x-auto no-scrollbar">
+        {tabs.map(tab => (
+          <button 
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+              activeTab === tab ? 'bg-[#1a1e26] text-[#2196f3] border border-gray-700' : 'text-gray-500'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Asset Selector & Chart Info */}
+      <div className="p-4 flex justify-between items-start">
+        <div className="bg-[#1a1e26] p-3 rounded-xl border border-gray-700 flex items-center gap-3">
+          <div className="w-8 h-8 bg-blue-500/20 rounded flex items-center justify-center text-blue-500">
+            <Settings2 size={18} />
           </div>
-          
-          <Link to="/select-currency" className="bg-[#f3e8ff] rounded-[2rem] p-5 flex flex-col justify-center gap-1 relative overflow-hidden h-20 shadow-md">
-             <span className="text-lg font-bold text-[#7c3aed]">Recharge</span>
-             <span className="text-[10px] text-[#7c3aed]/60 font-bold uppercase tracking-widest">GO &gt;</span>
-             <div className="absolute right-2 bottom-2">
-                <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" width="45" alt="" />
-             </div>
-          </Link>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <Link to="/withdraw" className="bg-[#f0f9ff] rounded-[1.5rem] p-3 flex flex-col items-center justify-center gap-1 shadow-sm border border-blue-50">
-               <div className="bg-blue-100 p-2 rounded-xl text-blue-600">
-                 <Landmark size={22} />
-               </div>
-               <span className="text-[10px] font-bold text-blue-900 mt-1">Withdraw</span>
-            </Link>
-            <div className="bg-[#fdf2f8] rounded-[1.5rem] p-3 flex flex-col items-center justify-center gap-1 shadow-sm border border-pink-50">
-               <div className="bg-pink-100 p-2 rounded-xl text-pink-600">
-                 <FileText size={22} />
-               </div>
-               <span className="text-[10px] font-bold text-pink-900 mt-1 text-center leading-tight">Company Profile</span>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold">Volatility 100 Index</span>
+              <ChevronDown size={14} className="text-gray-500" />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-mono">{liveData.price ? liveData.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'Loading...'}</span>
+              <span className={`text-xs ${liveData.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                {liveData.changePercent ? (liveData.changePercent >= 0 ? '+' : '') + liveData.changePercent.toFixed(2) + '%' : ''}
+              </span>
             </div>
           </div>
         </div>
+        <div className="bg-[#1a1e26] px-3 py-1 rounded border border-gray-700 text-xs font-mono text-gray-400">
+          100%
+        </div>
+      </div>
 
-        {/* Activitys Section */}
-        <div className="mt-8">
-          <h2 className="text-xl font-extrabold mb-5 px-1">Activitys</h2>
-          <div className="flex flex-col gap-4">
-            {[
-              { title: 'Invite 30 members and complete valid recharge to easily get VIP3 rewards.', reward: '+106.00 USDT', emoji: '😊' },
-              { title: 'Invite 5 VIP members to recharge effectively and you can get VIP4 rewards for free.', reward: '+292.00 USDT', emoji: '🤑' }
-            ].map((activity, idx) => (
-              <div key={idx} className="bg-gray-50 rounded-[2rem] p-5 flex items-center justify-between gap-4 border border-gray-100 shadow-sm">
-                <div className="text-4xl bg-white p-3 rounded-2xl shadow-inner">{activity.emoji}</div>
-                <div className="flex-grow">
-                  <p className="text-[11px] leading-relaxed font-semibold text-gray-700">{activity.title}</p>
-                  <button className="mt-3 bg-gray-900 text-white text-[9px] px-4 py-1.5 rounded-full font-bold uppercase tracking-wider">View Tasks</button>
-                </div>
-                <div className="text-[#10b981] text-sm font-black whitespace-nowrap">{activity.reward}</div>
-              </div>
+      {/* Chart Section */}
+      <div className="h-48 px-4 relative">
+        <TradingChart onPriceUpdate={setLiveData} />
+      </div>
+
+      {/* Last Digits Ticker */}
+      <div className="px-4 py-4 flex justify-between gap-1 overflow-x-auto no-scrollbar">
+        {lastDigits.map((pct, idx) => (
+          <div key={idx} className="flex flex-col items-center flex-1 min-w-[30px]">
+            <span className="text-xs font-bold mb-1">{idx}</span>
+            <div className={`text-[10px] ${idx === 2 ? 'text-red-500' : idx === 9 ? 'text-green-500' : 'text-gray-400'}`}>
+              {pct.toFixed(1)}%
+            </div>
+            {idx === 7 && <div className="mt-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] border-t-orange-500"></div>}
+          </div>
+        ))}
+      </div>
+
+      {/* Controls Panel */}
+      <div className="bg-[#1a1e26] mx-4 rounded-2xl border border-gray-700 overflow-hidden mb-4 shadow-2xl">
+        {/* Toggle */}
+        <div className="flex p-1 bg-[#0e1117] m-2 rounded-xl border border-gray-800">
+          <button 
+            onClick={() => setIsAuto(true)}
+            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${isAuto ? 'bg-[#2196f3] text-white shadow-lg' : 'text-gray-500'}`}
+          >
+            AUTO
+          </button>
+          <button 
+            onClick={() => setIsAuto(false)}
+            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${!isAuto ? 'bg-[#2196f3] text-white shadow-lg' : 'text-gray-500'}`}
+          >
+            MANUAL
+          </button>
+        </div>
+
+        {/* Stake Input */}
+        <div className="px-4 py-2">
+          <div className="text-center text-[10px] font-bold text-[#2196f3] uppercase tracking-wider mb-2">Stake</div>
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <button onClick={() => setStake(s => Math.max(1, s - 1))} className="w-10 h-10 rounded-xl bg-[#0e1117] border border-gray-800 flex items-center justify-center text-gray-400 active:scale-90 transition-transform">
+              <Minus size={20} />
+            </button>
+            <div className="flex-grow flex items-center justify-center gap-2">
+              <span className="text-[#2196f3] text-xl font-bold">$</span>
+              <input 
+                type="number" 
+                value={stake} 
+                onChange={(e) => setStake(Number(e.target.value))}
+                className="bg-transparent text-center text-3xl font-bold w-24 outline-none font-mono"
+              />
+            </div>
+            <button onClick={() => setStake(s => s + 1)} className="w-10 h-10 rounded-xl bg-[#0e1117] border border-gray-800 flex items-center justify-center text-gray-400 active:scale-90 transition-transform">
+              <Plus size={20} />
+            </button>
+          </div>
+
+          {/* Presets */}
+          <div className="grid grid-cols-6 gap-2 mb-4">
+            {presets.map(p => (
+              <button 
+                key={p} 
+                onClick={() => setStake(p)}
+                className={`py-1.5 rounded-lg text-xs font-bold border transition-all ${stake === p ? 'bg-[#2196f3]/10 border-[#2196f3] text-[#2196f3]' : 'bg-[#0e1117] border-gray-800 text-gray-400 active:bg-gray-800'}`}
+              >
+                ${p}
+              </button>
             ))}
           </div>
         </div>
 
+        {/* Secondary Inputs */}
+        <div className="grid grid-cols-3 gap-2 px-4 pb-4">
+          <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800">
+            <div className="text-[8px] font-bold text-green-500 uppercase text-center">Target Profit</div>
+            <div className="text-center font-bold mt-1 text-sm">$200</div>
+          </div>
+          <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800">
+            <div className="text-[8px] font-bold text-red-500 uppercase text-center">Stop Loss</div>
+            <div className="text-center font-bold mt-1 text-sm">$999</div>
+          </div>
+          <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800">
+            <div className="text-[8px] font-bold text-orange-500 uppercase text-center">Multiplier</div>
+            <div className="text-center font-bold mt-1 text-sm">x 2</div>
+          </div>
+        </div>
       </div>
 
-      {/* Floating Side Buttons */}
-      <div className="fixed right-3 top-1/2 -translate-y-1/2 flex flex-col gap-5 z-40">
-         <div className="bg-[#d4ff70] p-2.5 rounded-full text-black shadow-xl border-2 border-white/20"><Calendar size={22} strokeWidth={2.5} /></div>
-         <div className="bg-[#d4ff70] p-2.5 rounded-full text-black shadow-xl border-2 border-white/20"><Gift size={22} strokeWidth={2.5} /></div>
+      {/* Action Buttons */}
+      <div className="px-4 grid grid-cols-2 gap-4">
+        <button className="bg-green-600 rounded-2xl p-4 flex flex-col items-start gap-1 shadow-lg shadow-green-600/30 active:scale-95 transition-all">
+          <span className="text-lg font-bold">Even</span>
+          <div className="flex items-center justify-between w-full">
+            <span className="text-[10px] opacity-80">95.2%</span>
+            <div className="text-right">
+              <div className="text-xs font-bold">${(stake * 1.952).toFixed(2)}</div>
+              <div className="text-[8px] opacity-60">Payout</div>
+            </div>
+          </div>
+        </button>
+        <button className="bg-red-600 rounded-2xl p-4 flex flex-col items-start gap-1 shadow-lg shadow-red-600/30 active:scale-95 transition-all">
+          <span className="text-lg font-bold">Odd</span>
+          <div className="flex items-center justify-between w-full">
+            <span className="text-[10px] opacity-80">95.2%</span>
+            <div className="text-right">
+              <div className="text-xs font-bold">${(stake * 1.952).toFixed(2)}</div>
+              <div className="text-[8px] opacity-60">Payout</div>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      {/* Extra Link for Withdraw */}
+      <div className="mt-4 px-4 pb-4 text-center">
+        <Link to="/withdraw" className="text-xs text-gray-500 font-bold uppercase tracking-widest hover:text-[#2196f3] transition-colors">
+          Need to withdraw? Go to Withdraw Page &gt;
+        </Link>
       </div>
     </div>
   );

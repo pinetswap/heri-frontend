@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 
 import { API_URL } from '../config/api';
@@ -52,28 +52,34 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#121212] text-white">
+    <div className="flex flex-col min-h-screen bg-[#0e1117] text-white">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#2196f3]/10 to-transparent pointer-events-none"></div>
+
       {/* Header / Brand Area */}
-      <div className="flex flex-col items-center pt-12 pb-8 gap-4 px-6">
-        <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-2xl border border-white/10 overflow-hidden transform rotate-3">
+      <div className="flex flex-col items-center pt-16 pb-12 gap-6 px-6 relative z-10">
+        <div className="w-20 h-20 bg-[#1a1e26] rounded-3xl flex items-center justify-center shadow-2xl border border-gray-800 overflow-hidden transform transition-transform hover:scale-105">
           <img src={logo} alt="Logo" className="w-full h-full object-contain" />
         </div>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-black tracking-tighter uppercase">Global Transfer</h1>
-          <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em]">Investment Portal</p>
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="text-3xl font-black tracking-tight text-white">DERIV PORTAL</h1>
+          <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 rounded-full border border-green-500/20">
+            <ShieldCheck size={14} className="text-green-500" />
+            <span className="text-green-500 text-[10px] font-bold uppercase tracking-widest">Secure Connection</span>
+          </div>
         </div>
       </div>
 
-      {/* Main Form Card */}
-      <div className="main-content-card !rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.3)]">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8 pt-4 pb-10">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-3xl font-black text-gray-900 tracking-tighter">Welcome Back</h2>
-            <p className="text-gray-400 text-xs font-bold">Please log in to your account to continue</p>
+      {/* Main Form Area */}
+      <div className="px-6 pb-12 relative z-10">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div className="flex flex-col gap-1 mb-2">
+            <h2 className="text-2xl font-bold text-white">Welcome back</h2>
+            <p className="text-gray-500 text-sm">Sign in to your trading account</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-500 p-3 rounded-xl text-xs font-bold border border-red-100">
+            <div className="bg-red-500/10 text-red-500 p-4 rounded-xl text-xs font-bold border border-red-500/20 animate-shake">
               {error}
             </div>
           )}
@@ -81,16 +87,16 @@ const Login = () => {
           <div className="flex flex-col gap-4">
             {/* Email Field */}
             <div className="flex flex-col gap-2">
-              <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest ml-1">Email Address</span>
-              <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100 flex items-center gap-4 shadow-inner">
-                <Mail size={20} className="text-gray-400" />
+              <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider ml-1">Email Address</span>
+              <div className="bg-[#1a1e26] rounded-2xl p-4 border border-gray-800 flex items-center gap-4 focus-within:border-[#2196f3] transition-colors shadow-lg">
+                <Mail size={20} className="text-gray-500" />
                 <input 
                   type="email" 
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="name@example.com" 
-                  className="w-full bg-transparent outline-none text-sm font-black text-gray-800 placeholder:text-gray-300" 
+                  placeholder="Enter your email" 
+                  className="w-full bg-transparent outline-none text-sm font-semibold text-white placeholder:text-gray-600" 
                   required
                 />
               </div>
@@ -98,44 +104,49 @@ const Login = () => {
 
             {/* Password Field */}
             <div className="flex flex-col gap-2">
-              <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest ml-1">Password</span>
-              <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100 flex items-center gap-4 shadow-inner">
-                <Lock size={20} className="text-gray-400" />
+              <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider ml-1">Password</span>
+              <div className="bg-[#1a1e26] rounded-2xl p-4 border border-gray-800 flex items-center gap-4 focus-within:border-[#2196f3] transition-colors shadow-lg">
+                <Lock size={20} className="text-gray-500" />
                 <input 
                   type={showPassword ? "text" : "password"} 
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password" 
-                  className="w-full bg-transparent outline-none text-sm font-black text-gray-800 placeholder:text-gray-300" 
+                  className="w-full bg-transparent outline-none text-sm font-semibold text-white placeholder:text-gray-600" 
                   required
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-300 active:text-gray-900 transition-colors">
-                  {showPassword ? <EyeOff size={20} strokeWidth={2.5} /> : <Eye size={20} strokeWidth={2.5} />}
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-500 hover:text-white transition-colors p-1">
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
           </div>
 
           <div className="flex justify-end px-1">
-            <button type="button" className="text-[10px] font-black text-primary uppercase tracking-widest">Forgot Password?</button>
+            <button type="button" className="text-xs font-bold text-[#2196f3] hover:underline">Forgot password?</button>
           </div>
 
           <button 
             type="submit"
             disabled={loading}
-            className="w-full bg-[#ffcc80] text-black font-black py-5 rounded-[1.5rem] text-lg shadow-xl shadow-[#ffcc80]/20 active:scale-95 transition-transform uppercase tracking-widest disabled:opacity-50"
+            className="w-full bg-[#2196f3] text-white font-bold py-4.5 rounded-2xl text-lg shadow-xl shadow-[#2196f3]/20 active:scale-[0.98] transition-all disabled:opacity-50 mt-4"
           >
-            {loading ? 'Logging in...' : 'Log In'}
+            {loading ? 'Authenticating...' : 'Sign In'}
           </button>
 
-          <div className="flex flex-col items-center gap-4 mt-4">
-            <p className="text-xs text-gray-400 font-bold text-center">
+          <div className="flex flex-col items-center gap-4 mt-6">
+            <p className="text-sm text-gray-500">
               Don't have an account? 
-              <Link to="/signup" className="text-gray-900 font-black ml-1 uppercase tracking-wider underline">Create Account</Link>
+              <Link to="/signup" className="text-[#2196f3] font-bold ml-1 hover:underline">Create one now</Link>
             </p>
           </div>
         </form>
+      </div>
+      
+      {/* Footer Branding */}
+      <div className="mt-auto pb-10 flex justify-center opacity-30">
+        <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-gray-500">Global Transfer Investment</span>
       </div>
     </div>
   );
