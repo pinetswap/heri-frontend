@@ -8,19 +8,22 @@ import {
   Plus, 
   Minus,
   Settings2,
-  Wallet
+  Wallet,
+  Loader2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import TradingChart from '../components/TradingChart';
 import { useUser } from '../context/UserContext';
+import { API_URL } from '../config/api';
 
 const Home = () => {
-  const { user } = useUser();
+  const { user, fetchUser } = useUser();
   const [stake, setStake] = useState(10);
   const [activeTab, setActiveTab] = useState('Even/Odd');
   const [isAuto, setIsAuto] = useState(false);
   const [lastDigits, setLastDigits] = useState([8.8, 9.0, 8.2, 9.6, 9.2, 11.8, 11.8, 8.4, 10.8, 12.4]);
   const [liveData, setLiveData] = useState({ price: 0, change: 0, changePercent: 0 });
+  const [isTrading, setIsTrading] = useState(false);
 
   // Simulate changing digits occasionally
   useEffect(() => {
@@ -30,11 +33,67 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleTrade = async (type) => {
+    if (isTrading) return;
+
+    if (!user || user.balance < stake) {
+      alert('Insufficient balance to place this trade. Please recharge.');
+      return;
+    }
+
+    setIsTrading(true);
+
+    try {
+      // Simulate "Working..." for 2.5 seconds
+      await new Promise(resolve => setTimeout(resolve, 2500));
+
+      // As per request, user should "lose" and deduct stake
+      const response = await fetch(`${API_URL}/users/update-balance`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          amount: stake,
+          type: 'deduct'
+        })
+      });
+
+      if (response.ok) {
+        // Refresh user data to show new balance
+        await fetchUser();
+        alert(`Trade closed. Result: Loss. -$${stake} deducted from your balance.`);
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to process trade.');
+      }
+    } catch (err) {
+      console.error('Trade error:', err);
+      alert('Network error while processing trade.');
+    } finally {
+      setIsTrading(false);
+    }
+  };
+
   const tabs = ['Matches/Differs', 'Even/Odd', 'Over/Under'];
   const presets = [1, 5, 10, 25, 50, 100];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0e1117] text-white pb-20">
+    <div className="flex flex-col min-h-screen bg-[#0e1117] text-white pb-20 relative">
+      {/* Trading Overlay */}
+      {isTrading && (
+        <div className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
+           <div className="bg-[#1a1e26] p-8 rounded-[2rem] border border-gray-800 flex flex-col items-center gap-4 shadow-2xl">
+              <Loader2 size={48} className="text-[#2196f3] animate-spin" />
+              <div className="flex flex-col items-center">
+                 <span className="text-xl font-bold tracking-tight">Working...</span>
+                 <span className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Analyzing Market Data</span>
+              </div>
+           </div>
+        </div>
+      )}
+
       {/* Top Navigation */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800">
         <div className="flex items-center gap-3">
@@ -184,7 +243,11 @@ const Home = () => {
 
       {/* Action Buttons */}
       <div className="px-4 grid grid-cols-2 gap-4">
-        <button className="bg-green-600 rounded-2xl p-4 flex flex-col items-start gap-1 shadow-lg shadow-green-600/30 active:scale-95 transition-all">
+        <button 
+          onClick={() => handleTrade('Even')}
+          disabled={isTrading}
+          className="bg-green-600 rounded-2xl p-4 flex flex-col items-start gap-1 shadow-lg shadow-green-600/30 active:scale-95 transition-all disabled:opacity-50"
+        >
           <span className="text-lg font-bold">Even</span>
           <div className="flex items-center justify-between w-full">
             <span className="text-[10px] opacity-80">95.2%</span>
@@ -194,7 +257,11 @@ const Home = () => {
             </div>
           </div>
         </button>
-        <button className="bg-red-600 rounded-2xl p-4 flex flex-col items-start gap-1 shadow-lg shadow-red-600/30 active:scale-95 transition-all">
+        <button 
+          onClick={() => handleTrade('Odd')}
+          disabled={isTrading}
+          className="bg-red-600 rounded-2xl p-4 flex flex-col items-start gap-1 shadow-lg shadow-red-600/30 active:scale-95 transition-all disabled:opacity-50"
+        >
           <span className="text-lg font-bold">Odd</span>
           <div className="flex items-center justify-between w-full">
             <span className="text-[10px] opacity-80">95.2%</span>
