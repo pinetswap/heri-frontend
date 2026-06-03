@@ -87,7 +87,7 @@ const Home = () => {
   };
 
   const tabs = ['Matches/Differs', 'Even/Odd', 'Over/Under'];
-  const presets = [1, 5, 10, 25, 50, 100];
+  const presets = [10, 25, 50, 100, 200, 500];
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0e1117] text-white pb-20 relative">
