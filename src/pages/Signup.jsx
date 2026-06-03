@@ -71,8 +71,8 @@ const Signup = () => {
           <img src={logo} alt="Logo" className="w-full h-full object-contain" />
         </div>
         <div className="flex flex-col items-center text-center">
-          <h1 className="text-3xl font-black tracking-tight uppercase text-white">DERIV</h1>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">Start your journey</p>
+          <h1 className="text-xl font-black tracking-tighter uppercase text-white">Global Transfer Investment</h1>
+          <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">Join our trading community</p>
         </div>
       </div>
 

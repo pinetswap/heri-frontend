@@ -62,10 +62,10 @@ const Login = () => {
           <img src={logo} alt="Logo" className="w-full h-full object-contain" />
         </div>
         <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-3xl font-black tracking-tight text-white">DERIV PORTAL</h1>
+          <h1 className="text-2xl font-black tracking-tighter uppercase text-white">Global Transfer Investment</h1>
           <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 rounded-full border border-green-500/20">
             <ShieldCheck size={14} className="text-green-500" />
-            <span className="text-green-500 text-[10px] font-bold uppercase tracking-widest">Secure Connection</span>
+            <span className="text-green-500 text-[10px] font-bold uppercase tracking-widest">Secure Trading Portal</span>
           </div>
         </div>
       </div>
