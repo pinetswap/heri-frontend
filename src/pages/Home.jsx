@@ -19,7 +19,32 @@ import { API_URL } from '../config/api';
 const Home = () => {
   const { user, fetchUser } = useUser();
   const [stake, setStake] = useState(10);
+  const [targetProfit, setTargetProfit] = useState(user?.targetProfit || 200);
+  const [multiplier, setMultiplier] = useState(user?.multiplier || 2);
   const [activeTab, setActiveTab] = useState('Even/Odd');
+
+  useEffect(() => {
+    if (user) {
+      setTargetProfit(user.targetProfit || 200);
+      setMultiplier(user.multiplier || 2);
+    }
+  }, [user]);
+
+  const saveSettings = async (updates) => {
+    try {
+      await fetch(`${API_URL}/users/settings`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(updates)
+      });
+      fetchUser();
+    } catch (err) {
+      console.error('Failed to save settings:', err);
+    }
+  };
   const [isAuto, setIsAuto] = useState(false);
   const [lastDigits, setLastDigits] = useState([8.8, 9.0, 8.2, 9.6, 9.2, 11.8, 11.8, 8.4, 10.8, 12.4]);
   const [liveData, setLiveData] = useState({ price: 0, change: 0, changePercent: 0 });
@@ -49,8 +74,9 @@ const Home = () => {
     setIsTrading(true);
 
     try {
-      // Simulate "Working..." for 2.5 seconds
-      await new Promise(resolve => setTimeout(resolve, 2500));
+      // Simulate "Working..." for user.winTime seconds (default 2.5s)
+      const delay = (user?.winTime || 2.5) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
 
       const response = await fetch(`${API_URL}/users/update-balance`, {
         method: 'PUT',
@@ -236,18 +262,42 @@ const Home = () => {
 
         {/* Secondary Inputs */}
         <div className="grid grid-cols-3 gap-2 px-4 pb-4">
-          <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800">
+          <button 
+            onClick={() => {
+              const val = prompt('Enter Target Profit ($):', targetProfit);
+              if (val !== null) {
+                const num = parseFloat(val);
+                if (!isNaN(num)) {
+                  setTargetProfit(num);
+                  saveSettings({ targetProfit: num });
+                }
+              }
+            }}
+            className="bg-[#0e1117] p-2 rounded-xl border border-gray-800 text-left"
+          >
             <div className="text-[8px] font-bold text-green-500 uppercase text-center">Target Profit</div>
-            <div className="text-center font-bold mt-1 text-sm">$200</div>
-          </div>
+            <div className="text-center font-bold mt-1 text-sm">${targetProfit}</div>
+          </button>
           <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800">
             <div className="text-[8px] font-bold text-red-500 uppercase text-center">Stop Loss</div>
             <div className="text-center font-bold mt-1 text-sm">$999</div>
           </div>
-          <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800">
+          <button 
+            onClick={() => {
+              const val = prompt('Enter Multiplier (e.g. 2):', multiplier);
+              if (val !== null) {
+                const num = parseFloat(val);
+                if (!isNaN(num)) {
+                  setMultiplier(num);
+                  saveSettings({ multiplier: num });
+                }
+              }
+            }}
+            className="bg-[#0e1117] p-2 rounded-xl border border-gray-800 text-left"
+          >
             <div className="text-[8px] font-bold text-orange-500 uppercase text-center">Multiplier</div>
-            <div className="text-center font-bold mt-1 text-sm">x 2</div>
-          </div>
+            <div className="text-center font-bold mt-1 text-sm">x {multiplier}</div>
+          </button>
         </div>
       </div>
 

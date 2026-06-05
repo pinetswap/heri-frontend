@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft, Eye, EyeOff, CheckCircle2, Wallet, ArrowUpRight, ShieldCheck, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { currencies } from '../config/currencies';
+import { API_URL } from '../config/api';
 
 import { useUser } from '../context/UserContext';
 
@@ -59,9 +60,26 @@ const Withdraw = () => {
     setSubmitting(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setShowSuccessModal(true);
-      setFormData({ amount: '', address: '', password: '' });
+      const response = await fetch(`${API_URL}/withdrawals`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          amount,
+          walletAddress: formData.address,
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setShowSuccessModal(true);
+        setFormData({ amount: '', address: '', password: '' });
+      } else {
+        setError(data.error || 'Failed to submit withdrawal request.');
+      }
     } catch (err) {
       setError('Failed to submit withdrawal request.');
     } finally {
