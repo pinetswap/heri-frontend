@@ -37,8 +37,8 @@ const Withdraw = () => {
       return;
     }
 
-    if (amount < 9) {
-      setError('Minimum withdrawal amount is 9.000 USDT');
+    if (amount < 50) {
+      setError('Minimum withdrawal amount is 50.00 USDT');
       return;
     }
 
@@ -196,7 +196,7 @@ const Withdraw = () => {
                     name="amount"
                     value={formData.amount}
                     onChange={handleChange}
-                    placeholder="Min 9.00 USDT" 
+                    placeholder="Min 50.00 USDT" 
                     className="w-full bg-transparent outline-none text-sm font-semibold text-white placeholder:text-gray-600" 
                   />
                   <button type="button" onClick={() => setFormData({...formData, amount: user?.balance.toString()})} className="text-[10px] font-bold text-[#2196f3] uppercase px-2 py-1 bg-blue-500/10 rounded">Max</button>
