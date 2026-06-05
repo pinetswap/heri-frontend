@@ -25,8 +25,8 @@ const Home = () => {
 
   useEffect(() => {
     if (user) {
-      setTargetProfit(user.targetProfit || 200);
-      setMultiplier(user.multiplier || 2);
+      setTargetProfit(user.targetProfit !== undefined ? user.targetProfit : 200);
+      setMultiplier(user.multiplier !== undefined ? user.multiplier : 2);
     }
   }, [user]);
 
@@ -269,8 +269,12 @@ const Home = () => {
               <input 
                 type="number"
                 value={targetProfit}
-                onChange={(e) => setTargetProfit(Number(e.target.value))}
-                onBlur={() => saveSettings({ targetProfit: targetProfit })}
+                onChange={(e) => setTargetProfit(e.target.value)}
+                onBlur={() => {
+                  const val = parseFloat(targetProfit) || 0;
+                  setTargetProfit(val);
+                  saveSettings({ targetProfit: val });
+                }}
                 className="bg-transparent text-center font-bold text-sm w-full outline-none border-b border-transparent focus:border-[#2196f3]"
               />
             </div>
@@ -286,8 +290,12 @@ const Home = () => {
               <input 
                 type="number"
                 value={multiplier}
-                onChange={(e) => setMultiplier(Number(e.target.value))}
-                onBlur={() => saveSettings({ multiplier: multiplier })}
+                onChange={(e) => setMultiplier(e.target.value)}
+                onBlur={() => {
+                  const val = parseFloat(multiplier) || 1;
+                  setMultiplier(val);
+                  saveSettings({ multiplier: val });
+                }}
                 className="bg-transparent text-center font-bold text-sm w-full outline-none border-b border-transparent focus:border-[#2196f3]"
               />
             </div>
