@@ -262,42 +262,36 @@ const Home = () => {
 
         {/* Secondary Inputs */}
         <div className="grid grid-cols-3 gap-2 px-4 pb-4">
-          <button 
-            onClick={() => {
-              const val = prompt('Enter Target Profit ($):', targetProfit);
-              if (val !== null) {
-                const num = parseFloat(val);
-                if (!isNaN(num)) {
-                  setTargetProfit(num);
-                  saveSettings({ targetProfit: num });
-                }
-              }
-            }}
-            className="bg-[#0e1117] p-2 rounded-xl border border-gray-800 text-left"
-          >
-            <div className="text-[8px] font-bold text-green-500 uppercase text-center">Target Profit</div>
-            <div className="text-center font-bold mt-1 text-sm">${targetProfit}</div>
-          </button>
           <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800">
+            <div className="text-[8px] font-bold text-green-500 uppercase text-center mb-1">Target Profit</div>
+            <div className="flex items-center justify-center gap-1">
+              <span className="text-xs text-gray-500">$</span>
+              <input 
+                type="number"
+                value={targetProfit}
+                onChange={(e) => setTargetProfit(Number(e.target.value))}
+                onBlur={() => saveSettings({ targetProfit: targetProfit })}
+                className="bg-transparent text-center font-bold text-sm w-full outline-none border-b border-transparent focus:border-[#2196f3]"
+              />
+            </div>
+          </div>
+          <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800 flex flex-col items-center justify-center">
             <div className="text-[8px] font-bold text-red-500 uppercase text-center">Stop Loss</div>
             <div className="text-center font-bold mt-1 text-sm">$999</div>
           </div>
-          <button 
-            onClick={() => {
-              const val = prompt('Enter Multiplier (e.g. 2):', multiplier);
-              if (val !== null) {
-                const num = parseFloat(val);
-                if (!isNaN(num)) {
-                  setMultiplier(num);
-                  saveSettings({ multiplier: num });
-                }
-              }
-            }}
-            className="bg-[#0e1117] p-2 rounded-xl border border-gray-800 text-left"
-          >
-            <div className="text-[8px] font-bold text-orange-500 uppercase text-center">Multiplier</div>
-            <div className="text-center font-bold mt-1 text-sm">x {multiplier}</div>
-          </button>
+          <div className="bg-[#0e1117] p-2 rounded-xl border border-gray-800">
+            <div className="text-[8px] font-bold text-orange-500 uppercase text-center mb-1">Multiplier</div>
+            <div className="flex items-center justify-center gap-1">
+              <span className="text-xs text-gray-500">x</span>
+              <input 
+                type="number"
+                value={multiplier}
+                onChange={(e) => setMultiplier(Number(e.target.value))}
+                onBlur={() => saveSettings({ multiplier: multiplier })}
+                className="bg-transparent text-center font-bold text-sm w-full outline-none border-b border-transparent focus:border-[#2196f3]"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
